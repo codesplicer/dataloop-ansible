@@ -8,6 +8,16 @@
 - include: rhel.yml
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' or ansible_distribution == 'RedHat' or ansible_distribution == 'Amazon'
 
+- include_vars: "{{ ansible_os_family }}.yml"
+
 - name: Create the config file
   template: src=dataloop-agent.yaml.j2 dest=/etc/dataloop/agent.yaml owner=root group=dataloop mode=640
   notify: restart dataloop-agent
+
+- name: Write dataloop agent defaults file
+  template:
+    src: dataloop-agent.j2
+    dest: "{{ dataloop_agent_defaults_file }}"
+    owner: root
+    group: root
+    mode: 0644
